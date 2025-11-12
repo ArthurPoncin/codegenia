@@ -1,6 +1,3 @@
-import PropTypes from "prop-types";
-
-// Voir docs/02_design_application.md — compteur de jetons
 function TokenCounter({ value = 0 }) {
   return (
     <div className="group relative inline-flex items-center gap-2 overflow-hidden rounded-2xl border border-white/60 bg-white/80 px-4 py-2 shadow-card backdrop-blur">

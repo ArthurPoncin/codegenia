@@ -1,4 +1,3 @@
-// Voir docs/02_design_application.md — footer
 function AppFooter() {
   const year = new Date().getFullYear();
 

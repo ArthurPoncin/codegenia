@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { Link, NavLink } from "react-router-dom";
-import Button from "@/components/ui/Button.jsx";
 import TokenCounter from "@/components/domain/TokenCounter.jsx";
+import { useTokens } from "@/features/tokens/useTokens.js";
 
 const navLinkClass = ({ isActive }) =>
   `relative inline-flex items-center rounded-full px-4 py-2 text-xs font-semibold transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 sm:text-sm ${
@@ -10,8 +10,9 @@ const navLinkClass = ({ isActive }) =>
       : "text-brand-gray hover:bg-white/70 hover:text-brand-black"
   }`;
 
-// Voir docs/02_design_application.md — header principal
-function AppHeader({ tokenBalance = 0, onGenerate }) {
+function AppHeader() {
+  const { balance } = useTokens();
+
   return (
     <header className="sticky top-0 z-40 border-b border-white/60 bg-white/70 backdrop-blur">
       <div className="mx-auto flex w-full max-w-6xl items-center gap-4 px-4 py-3">
@@ -36,7 +37,7 @@ function AppHeader({ tokenBalance = 0, onGenerate }) {
             Collection
           </NavLink>
           <NavLink to="/settings" className={navLinkClass}>
-            Réglages
+            Paramètres
           </NavLink>
         </nav>
         <div className="ml-auto flex items-center gap-3">

@@ -2,8 +2,7 @@ import PropTypes from "prop-types";
 import AppHeader from "@/components/layout/AppHeader.jsx";
 import AppFooter from "@/components/layout/AppFooter.jsx";
 
-// Voir docs/02_design_application.md — AppShell
-function AppShell({ children, tokenBalance = 0, onGenerate }) {
+function AppShell({ children }) {
   return (
     <div className="relative min-h-dvh overflow-hidden bg-surface-50 text-brand-black">
       <div className="pointer-events-none absolute inset-0" aria-hidden>

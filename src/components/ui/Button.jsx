@@ -1,6 +1,3 @@
-import PropTypes from "prop-types";
-
-// Voir docs/02_design_application.md — styles et variantes de bouton
 const baseClasses =
   "inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-2.5 text-sm font-semibold transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60";
 

@@ -28,6 +28,8 @@ const featureCards = [
 const placeholderCards = Array.from({ length: 4 });
 
 function Home() {
+  const { balance } = useTokens();
+
   return (
     <div className="space-y-16">
       <section className="relative overflow-hidden rounded-3xl border border-white/60 bg-white/70 p-8 shadow-card backdrop-blur md:p-12">
