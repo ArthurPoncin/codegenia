@@ -10,7 +10,7 @@ function resolveEnv(key) {
   return undefined;
 }
 
-const baseURL = resolveEnv("VITE_API_BASE_URL") ?? "https://api.pokeforge.test";
+const baseURL = resolveEnv("VITE_API_BASE_URL") ?? "https://epsi.journeesdecouverte.fr:22222/v1/generate";
 
 const client = axios.create({
   baseURL,
@@ -19,7 +19,7 @@ const client = axios.create({
 });
 
 client.interceptors.request.use((config) => {
-  const apiKey = resolveEnv("VITE_API_KEY");
+  const apiKey = resolveEnv("EPSI");
   if (apiKey) {
     config.headers = config.headers ?? {};
     config.headers.Authorization = `Bearer ${apiKey}`;
