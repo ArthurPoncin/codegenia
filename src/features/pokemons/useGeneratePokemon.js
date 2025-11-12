@@ -1,9 +1,8 @@
 import { useCallback, useState } from "react";
-import {
-  startGenerationJob,
-  pollGenerationJob,
-} from "@/api/generation.js";
+import { startGenerationJob, pollGenerationJob } from "@/api/generation.js";
 import { useTokens } from "@/features/tokens/useTokens.js";
+import { useInventory } from "@/features/pokemons/useInventory.js";
+import { MAX_POKEMON_NAME_LENGTH } from "@/lib/constants.js";
 
 function createIdempotencyKey(provided) {
   if (provided) return provided;
@@ -13,12 +12,42 @@ function createIdempotencyKey(provided) {
   return `job_${Date.now()}_${Math.random().toString(16).slice(2)}`;
 }
 
-// Voir docs/05_logic_metier.md — génération avec idempotence & refund
-export function useGeneratePokemon({ pollIntervalMs = 1500, maxAttempts = 30 } = {}) {
+function resolvePromptPayload(payload) {
+  if (typeof payload === "string") {
+    return { prompt: payload };
+  }
+  return payload ?? {};
+}
+
+function buildPokemonDocument({ job, final, payload }) {
+  if (!final?.image?.url) {
+    return null;
+  }
+
+  const prompt = payload?.prompt ?? payload?.metadata?.prompt;
+  const baseName = payload?.name ?? prompt ?? "Pokémon";
+  const name = baseName.slice(0, MAX_POKEMON_NAME_LENGTH).trim() || "Pokémon";
+
+  const fallbackId =
+    typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+      ? crypto.randomUUID()
+      : `pkmn_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+  return {
+    id: final.image.id ?? job?.jobId ?? fallbackId,
+    name,
+    imageUrl: final.image.url,
+    rarity: final.metadata?.rarity ?? payload?.rarity,
+    prompt,
+    createdAt: Date.now(),
+  };
+}
+
+export function useGeneratePokemon({ pollIntervalMs = 1000, maxAttempts = 30, mode = "server" } = {}) {
   const [status, setStatus] = useState("idle");
   const [job, setJob] = useState(null);
   const [error, setError] = useState(null);
   const { applyGenerationCharge, refundGenerationCharge, syncBalance } = useTokens();
+  const { addLocal } = useInventory({ mode, autoLoad: false });
 
   const generate = useCallback(
     async (
@@ -34,12 +63,13 @@ export function useGeneratePokemon({ pollIntervalMs = 1500, maxAttempts = 30 } =
       setError(null);
       setStatus("queued");
 
+      const normalizedPayload = resolvePromptPayload(payload);
       const idempotencyKey = createIdempotencyKey(providedKey);
       let chargeApplied = false;
       let jobData;
 
       try {
-        jobData = await startGenerationJob(payload, {
+        jobData = await startGenerationJob(normalizedPayload, {
           idempotencyKey,
           signal,
         });
@@ -74,6 +104,18 @@ export function useGeneratePokemon({ pollIntervalMs = 1500, maxAttempts = 30 } =
         });
 
         setStatus(final.status);
+
+        if (final.status === "succeeded") {
+          const document = buildPokemonDocument({ job: jobData, final, payload: normalizedPayload });
+          if (document) {
+            await addLocal(document);
+          }
+        }
+
+        if (typeof final.balance === "number") {
+          await syncBalance(final.balance);
+        }
+
         return final;
       } catch (err) {
         setStatus("failed");
@@ -91,6 +133,7 @@ export function useGeneratePokemon({ pollIntervalMs = 1500, maxAttempts = 30 } =
       }
     },
     [
+      addLocal,
       applyGenerationCharge,
       maxAttempts,
       pollIntervalMs,
