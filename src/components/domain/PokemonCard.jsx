@@ -1,13 +1,13 @@
 import Badge from "@/components/ui/Badge.jsx";
 import Button from "@/components/ui/Button.jsx";
 
-// Voir docs/02_design_application.md — carte Pokémon
 function PokemonCard({
   name,
   imageUrl,
   createdAt,
   rarity,
   onSell,
+  isSelling = false,
   actions = null,
 }) {
   const formattedDate = createdAt ? new Date(createdAt).toLocaleString() : "";
@@ -43,8 +43,10 @@ function PokemonCard({
             className="text-sm text-brand-blue hover:text-brand-blue"
             onClick={onSell}
             aria-label={`Revendre ${name}`}
+            disabled={isSelling}
+            aria-busy={isSelling}
           >
-            Revendre (+5)
+            {isSelling ? "Revente…" : "Revendre (+5)"}
           </Button>
         ) : (
           <span className="text-xs text-brand-gray">Revendre indisponible</span>

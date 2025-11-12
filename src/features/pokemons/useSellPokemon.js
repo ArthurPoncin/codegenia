@@ -1,12 +1,13 @@
 import { useCallback, useState } from "react";
 import sellPokemon from "@/api/sales.js";
 import { useTokens } from "@/features/tokens/useTokens.js";
+import { useInventory } from "@/features/pokemons/useInventory.js";
 
-// Voir docs/05_logic_metier.md — revente atomique (+5)
-export function useSellPokemon() {
+export function useSellPokemon({ mode = "server" } = {}) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { applyResaleReward, syncBalance } = useTokens();
+  const { removeLocal } = useInventory({ mode, autoLoad: false });
 
   const sell = useCallback(
     async (pokemonId, config) => {
@@ -15,6 +16,7 @@ export function useSellPokemon() {
       try {
         const data = await sellPokemon(pokemonId, config);
 
+        await removeLocal(pokemonId);
         await applyResaleReward(pokemonId);
 
         if (typeof data.balance === "number") {
@@ -29,7 +31,7 @@ export function useSellPokemon() {
         setLoading(false);
       }
     },
-    [applyResaleReward, syncBalance]
+    [applyResaleReward, removeLocal, syncBalance]
   );
 
   const reset = useCallback(() => setError(null), []);

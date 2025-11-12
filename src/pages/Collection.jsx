@@ -1,12 +1,15 @@
+import PokemonGrid from "@/components/domain/PokemonGrid.jsx";
+
 function Collection() {
   return (
     <section className="space-y-4">
-      <h1 className="text-3xl font-semibold text-brand-black">Ta collection</h1>
-      <p className="text-brand-gray">
-      <h1 className="text-2xl font-semibold">Ta collection</h1>
-      <p className="text-slate-600">
-        Ta collection de Pokémon générés apparaîtra ici lorsque la logique métier sera connectée.
-      </p>
+      <header>
+        <h1 className="text-3xl font-semibold text-brand-black">Ta collection</h1>
+        <p className="text-sm text-brand-gray">
+          Retrouve ici toutes tes créations et revend celles que tu n’utilises plus.
+        </p>
+      </header>
+      <PokemonGrid />
     </section>
   );
 }
