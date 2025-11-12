@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 // Voir docs/02_design_application.md — styles et variantes de bouton
 const baseClasses =
   "inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold shadow transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60";
@@ -8,26 +10,21 @@ const variants = {
   ghost: "bg-transparent text-brand-black hover:bg-surface-100",
 };
 
-function Button({
-  variant = "primary",
-  className = "",
-  children,
-  ...props
-}) {
+function Button({ variant = "primary", className = "", children, ...props }) {
   const variantClasses = variants[variant] ?? variants.primary;
   const merged = `${baseClasses} ${variantClasses} ${className}`.trim();
 
   return (
     <button type="button" className={merged} {...props}>
-const baseStyles =
-  "inline-flex items-center justify-center rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition-colors duration-150 hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60";
-
-function Button({ children, className = "", ...props }) {
-  return (
-    <button className={`${baseStyles} ${className}`.trim()} {...props}>
       {children}
     </button>
   );
 }
+
+Button.propTypes = {
+  variant: PropTypes.oneOf(Object.keys(variants)),
+  className: PropTypes.string,
+  children: PropTypes.node,
+};
 
 export default Button;
