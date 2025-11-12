@@ -8,4 +8,8 @@ function TokenCounter({ value = 0 }) {
   );
 }
 
+TokenCounter.propTypes = {
+  value: PropTypes.number,
+};
+
 export default TokenCounter;

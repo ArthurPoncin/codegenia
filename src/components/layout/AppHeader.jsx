@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { Link, NavLink } from "react-router-dom";
 import TokenCounter from "@/components/domain/TokenCounter.jsx";
 import { useTokens } from "@/features/tokens/useTokens.js";
@@ -40,5 +41,10 @@ function AppHeader() {
     </header>
   );
 }
+
+AppHeader.propTypes = {
+  tokenBalance: PropTypes.number,
+  onGenerate: PropTypes.func,
+};
 
 export default AppHeader;

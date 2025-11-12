@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import AppHeader from "@/components/layout/AppHeader.jsx";
 import AppFooter from "@/components/layout/AppFooter.jsx";
 
@@ -10,5 +11,11 @@ function AppShell({ children }) {
     </div>
   );
 }
+
+AppShell.propTypes = {
+  children: PropTypes.node,
+  tokenBalance: PropTypes.number,
+  onGenerate: PropTypes.func,
+};
 
 export default AppShell;

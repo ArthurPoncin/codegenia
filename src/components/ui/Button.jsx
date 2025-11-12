@@ -18,4 +18,10 @@ function Button({ variant = "primary", className = "", children, ...props }) {
   );
 }
 
+Button.propTypes = {
+  variant: PropTypes.oneOf(Object.keys(variants)),
+  className: PropTypes.string,
+  children: PropTypes.node,
+};
+
 export default Button;

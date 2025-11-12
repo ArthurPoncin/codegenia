@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 import {
   createContext,
   useCallback,
@@ -20,6 +22,7 @@ import {
   TokenError,
   TOKEN_ERROR_CODES,
 } from "@/features/tokens/tokenErrors.js";
+
 
 const TokensContext = createContext(null);
 
@@ -251,5 +254,14 @@ export function useTokens() {
   }
   return context;
 }
+
+TokensProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+  mode: PropTypes.oneOf(["server", "offline"]),
+};
+
+TokensProvider.defaultProps = {
+  mode: "server",
+};
 
 export default useTokens;
