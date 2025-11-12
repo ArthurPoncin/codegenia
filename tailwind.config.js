@@ -29,6 +29,7 @@ export default {
         "2xl": "1.25rem",
       },
     },
+    extend: {},
   },
   plugins: [],
 };

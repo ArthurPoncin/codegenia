@@ -12,4 +12,9 @@ body {
 
 a {
   @apply text-brand-blue underline-offset-4 transition-colors hover:text-brand-red focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 rounded-md;
+  @apply bg-slate-50 text-slate-800 antialiased;
+}
+
+a {
+  @apply text-slate-900 underline-offset-2 hover:underline;
 }

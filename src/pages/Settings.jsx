@@ -3,6 +3,8 @@ function Settings() {
     <section className="space-y-4">
       <h1 className="text-3xl font-semibold text-brand-black">Préférences</h1>
       <p className="text-brand-gray">
+      <h1 className="text-2xl font-semibold">Préférences</h1>
+      <p className="text-slate-600">
         Configure tes paramètres d&apos;expérience PokéForge. Les options seront ajoutées dans les prochaines étapes.
       </p>
     </section>

@@ -7,6 +7,13 @@ function AppShell({ children, tokenBalance = 0, onGenerate }) {
     <div className="flex min-h-dvh flex-col bg-surface-50 text-brand-black">
       <AppHeader tokenBalance={tokenBalance} onGenerate={onGenerate} />
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">{children}</main>
+function AppShell({ children }) {
+  return (
+    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-800">
+      <AppHeader />
+      <main className="flex-1 container mx-auto w-full max-w-5xl px-4 py-6">
+        {children}
+      </main>
       <AppFooter />
     </div>
   );
