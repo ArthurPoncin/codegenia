@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --app-padding: 16px;
+}
+
+body {
+  @apply bg-surface-50 text-brand-black antialiased;
+}
+
+a {
+  @apply text-brand-blue underline-offset-4 transition-colors hover:text-brand-red focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 rounded-md;
+}
