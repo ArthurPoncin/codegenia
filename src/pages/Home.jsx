@@ -1,18 +1,31 @@
-import Button from "@/components/ui/Button.jsx";
+import GeneratorButton from "@/components/domain/GeneratorButton.jsx";
+import PokemonGrid from "@/components/domain/PokemonGrid.jsx";
+import TokenCounter from "@/components/domain/TokenCounter.jsx";
+import { useTokens } from "@/features/tokens/useTokens.js";
 
 function Home() {
+  const { balance } = useTokens();
+
   return (
     <section className="space-y-8">
-      <header className="space-y-3">
-        <h1 className="text-4xl font-bold tracking-tight text-brand-black">
-          Forge tes Pokémon uniques
-        </h1>
-        <p className="max-w-2xl text-base text-brand-gray">
-          Lance une génération pour créer un nouveau compagnon et enrichir ton inventaire. Chaque création coûte 10 jetons,
-          mais tu peux revendre pour en récupérer 5.
-        </p>
+      <header className="flex flex-wrap items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-brand-black">Bienvenue sur PokéForge</h1>
+          <p className="text-sm text-brand-gray">
+            Forge des Pokémon uniques en décrivant tes idées. Chaque génération coûte 10 jetons.
+          </p>
+        </div>
+        <div className="ml-auto">
+          <TokenCounter value={balance ?? 0} />
+        </div>
       </header>
-      <Button className="px-6 py-3 text-base">Générer un Pokémon</Button>
+
+      <GeneratorButton />
+
+      <div className="space-y-4">
+        <h2 className="text-xl font-semibold text-brand-black">Dernières créations</h2>
+        <PokemonGrid />
+      </div>
     </section>
   );
 }
