@@ -1,6 +1,8 @@
 // src/pages/Home.jsx
 import { Link } from "react-router-dom";
 import Button from "@/components/ui/Button.jsx";
+import PokemonCard from "@/components/domain/PokemonCard.jsx";
+import { generatePokemonFromApi } from "@/services/pokemonApiService.js";
 
 const heroStats = [
   { value: "100", label: "Jetons offerts pour démarrer" },
