@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import Badge from "@/components/ui/Badge.jsx";
 import Button from "@/components/ui/Button.jsx";
 
@@ -54,5 +55,14 @@ function PokemonCard({
     </article>
   );
 }
+
+PokemonCard.propTypes = {
+  name: PropTypes.string.isRequired,
+  imageUrl: PropTypes.string,
+  createdAt: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.instanceOf(Date)]),
+  rarity: PropTypes.string,
+  onSell: PropTypes.func,
+  actions: PropTypes.node,
+};
 
 export default PokemonCard;
