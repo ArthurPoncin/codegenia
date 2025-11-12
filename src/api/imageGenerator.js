@@ -1,8 +1,14 @@
-import client from "@/api/client.js";
+import {
+  startGenerationJob,
+  getGenerationJob,
+  pollGenerationJob,
+} from "@/api/generation.js";
 
-export async function generatePokemonImage(payload) {
-  const response = await client.post("/generate", payload);
-  return response.data;
+// Compatibilité historique : alias vers startGenerationJob
+export async function generatePokemonImage(payload, options) {
+  return startGenerationJob(payload, options);
 }
+
+export { startGenerationJob, getGenerationJob, pollGenerationJob };
 
 export default generatePokemonImage;
