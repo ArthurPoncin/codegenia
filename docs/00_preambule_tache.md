@@ -2,7 +2,7 @@
 
 ## 🎯 Contexte général
 
-Tu travailles sur **PokéForge**, une application React (Vite + Tailwind) avec **IndexedDB** et une **API text‑to‑image** pour générer des Pokémon.  
+Tu travailles sur **PokéForge**, une application React (Vite + Tailwind) avec **IndexedDB** et **PokéAPI** pour générer des Pokémon.  
 Les comportements, règles métier, API et design sont **définis dans les fichiers `docs/**/*.md`** (01–08).  
 Chaque tâche doit strictement respecter ces documents.
 
@@ -66,7 +66,7 @@ Chaque tâche doit strictement respecter ces documents.
 Implémenter le bouton “Générer (−10)” et le flux de génération asynchrone.
 
 ### Contexte
-Voir `04_api_endpoints.md` (POST `/generate`, polling), `05_logic_metier.md` (idempotence, débit −10), `06_integration_frontend.md` (hook `useGeneratePokemon`).
+Voir `04_api_endpoints.md` (PokéAPI), `05_logic_metier.md` (idempotence, débit −10), `06_integration_frontend.md` (hook `useGeneratePokemon`).
 
 ### Objectif
 Créer un bouton relié à la logique métier :  

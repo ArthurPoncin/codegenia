@@ -1,4 +1,5 @@
-import Button from "@/components/ui/Button.jsx";
+import GeneratorButton from "@/components/domain/GeneratorButton.jsx";
+import PokemonGrid from "@/components/domain/PokemonGrid.jsx";
 
 function Collection() {
   return (
@@ -16,16 +17,17 @@ function Collection() {
         </div>
       </header>
 
-      <div className="rounded-3xl border border-dashed border-brand-blue/40 bg-white/70 p-10 text-center shadow-card backdrop-blur">
-        <div className="mx-auto max-w-xl space-y-4">
-          <h2 className="text-xl font-semibold text-brand-black">Ton inventaire est encore vide</h2>
+      <div className="rounded-3xl border border-white/60 bg-white/70 p-8 shadow-card backdrop-blur">
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold text-brand-black">Crée de nouvelles cartes</h2>
           <p className="text-sm text-brand-gray">
-            Lance une génération pour créer ta première carte. Tu pourras ensuite revendre les doublons et suivre l’évolution de
-            ton solde de jetons.
+            PokéAPI alimente tes créations : cherche un Pokémon précis ou laisse la forge choisir un compagnon surprise.
           </p>
-          <Button className="px-6 py-3 text-base">Générer un Pokémon</Button>
+          <GeneratorButton />
         </div>
       </div>
+
+      <PokemonGrid />
     </section>
   );
 }

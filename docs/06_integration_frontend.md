@@ -9,7 +9,7 @@ initialisation des jetons → génération IA (−10) → insertion en collectio
 
 - **Hooks clés**
   - `useTokens()` — lecture/refresh du solde, init 100 si besoin.
-  - `useGeneratePokemon()` — déclenchement génération (idempotence + polling).
+  - `useGeneratePokemon()` — sélection d’un Pokémon via PokéAPI (idempotence locale).
   - `useInventory()` — lecture/ajout/suppression de Pokémon (via API ou IndexedDB).
   - `useSellPokemon()` — revente atomique (+5) + suppression inventaire.
 - **Context**
@@ -25,23 +25,16 @@ initialisation des jetons → génération IA (−10) → insertion en collectio
 
 ## 🔌 Câblage des services
 
-### Client API — `src/api/client.js` (rappel)
+### Service PokéAPI — `src/services/pokemonApiService.js`
 ```js
-import axios from "axios";
+const API_BASE_URL = "https://pokeapi.co/api/v2";
 
-const client = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
-  timeout: 20000,
-  headers: { "Content-Type": "application/json" },
-});
-
-client.interceptors.request.use((config) => {
-  const apiKey = import.meta.env.VITE_API_KEY;
-  if (apiKey) config.headers.Authorization = `Bearer ${apiKey}`;
-  return config;
-});
-
-export default client;
+export async function generatePokemonFromApi({ prompt, pokemonId, pokemonName, signal } = {}) {
+  // 1) Identifier (nom, id, ou random)
+  // 2) GET /pokemon/{id|name}
+  // 3) GET /pokemon-species/{id|name}
+  // 4) mapper image + rareté
+}
 ```
 
 ### DB locale — `src/db/indexedDB.js` (rappel)
@@ -157,70 +150,37 @@ export function useInventory({ mode = "server" } = {}) {
 }
 ```
 
-### `useGeneratePokemon.js`
+### `useGeneratePokemon.js` (PokéAPI)
 ```jsx
 import { useState } from "react";
-import client from "@/api/client";
+import { generatePokemonFromApi } from "@/services/pokemonApiService";
 import { useTokens } from "@/features/tokens/useTokens";
 import { useInventory } from "@/features/pokemons/useInventory";
 
-export function useGeneratePokemon({ mode = "server" } = {}) {
+export function useGeneratePokemon({ mode = "offline" } = {}) {
   const [status, setStatus] = useState("idle");
-  const { mutate, refresh } = useTokens();
+  const { applyGenerationCharge, refundGenerationCharge } = useTokens();
   const { addLocal } = useInventory({ mode });
 
-  async function poll(jobId, { interval = 1200, max = 30 } = {}) {
-    for (let i = 0; i < max; i++) {
-      const { data } = await client.get(`/generate/${jobId}`);
-      if (data.status === "succeeded") return data;
-      if (data.status === "failed" || data.status === "canceled") throw new Error(data.status);
-      await new Promise((r) => setTimeout(r, interval));
-    }
-    throw new Error("TIMEOUT");
-  }
-
-  const generate = async (prompt) => {
-    setStatus("queued");
+  const generate = async (payload) => {
     const key = crypto.randomUUID();
+    setStatus("queued");
+    const charge = await applyGenerationCharge({ idempotencyKey: key });
     try {
-      if (mode === "server") {
-        const { data } = await client.post("/generate", { prompt }, {
-          headers: { "Idempotency-Key": key },
-        });
-        // Débit effectué côté serveur; MAJ optimiste facultative :
-        if (data.chargeApplied) mutate(-10);
-
-        setStatus("running");
-        const done = await poll(data.jobId);
-        setStatus("succeeded");
-
-        // Insérer en collection (selon votre politique API)
-        await addLocal({
-          id: `pkmn_${done.image.id}`,
-          name: prompt.slice(0, 24) || "Pokémon",
-          imageUrl: done.image.url,
-          createdAt: Date.now(),
-        });
-
-        await refresh(); // récup solde serveur précis
-      } else {
-        // Mode offline-first: exemple minimal (vérifs détaillées dans 03/05)
-        // Ici vous appelleriez un provider local ou mock pour générer une image
-        mutate(-10);
-        setStatus("running");
-        const img = { id: crypto.randomUUID(), url: "#", width: 512, height: 512 };
-        await addLocal({
-          id: `pkmn_${img.id}`,
-          name: prompt.slice(0, 24) || "Pokémon",
-          imageUrl: img.url,
-          createdAt: Date.now(),
-        });
-        setStatus("succeeded");
-      }
+      setStatus("running");
+      const data = await generatePokemonFromApi(payload);
+      await addLocal({
+        id: `pkmn_${data.id}`,
+        name: data.name,
+        imageUrl: data.imageUrl,
+        rarity: data.rarity,
+        createdAt: Date.now(),
+      });
+      setStatus("succeeded");
+      return data;
     } catch (e) {
+      if (charge.applied) await refundGenerationCharge({ idempotencyKey: key });
       setStatus("failed");
-      // En mode serveur, si le backend fait un refund auto en cas de fail, rafraîchir :
-      await refresh();
       throw e;
     }
   };
@@ -265,7 +225,7 @@ import Button from "@/components/ui/Button";
 import { useGeneratePokemon } from "@/features/pokemons/useGeneratePokemon";
 
 export default function GeneratorButton() {
-  const { status, generate } = useGeneratePokemon({ mode: "server" });
+  const { status, generate } = useGeneratePokemon({ mode: "offline" });
 
   const busy = status === "queued" || status === "running";
   return (

@@ -4,7 +4,7 @@ import { useGeneratePokemon } from "@/features/pokemons/useGeneratePokemon.js";
 
 const DEFAULT_PROMPT = "A new electric fox-like Pokémon, anime style";
 
-function GeneratorButton({ mode = "server", onGenerated, pollingOptions }) {
+function GeneratorButton({ mode = "offline", onGenerated }) {
   const [prompt, setPrompt] = useState("");
   const { status, error, generate, reset } = useGeneratePokemon({ mode });
   const busy = status === "queued" || status === "running";
@@ -18,10 +18,7 @@ function GeneratorButton({ mode = "server", onGenerated, pollingOptions }) {
     event.preventDefault();
     const finalPrompt = prompt.trim() || DEFAULT_PROMPT;
     try {
-      const result = await generate(
-        { prompt: finalPrompt },
-        { pollingOptions }
-      );
+      const result = await generate({ prompt: finalPrompt });
       onGenerated?.(result);
       setPrompt("");
     } catch (err) {

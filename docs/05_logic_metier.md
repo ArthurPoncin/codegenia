@@ -6,7 +6,7 @@ Ce document formalise la **logique métier** de PokéForge : économie de jeto
 
 ## 🎯 Objectifs métier
 
-- Créer un flux **prévisible et traçable** pour générer des Pokémon (text‑to‑image).
+- Créer un flux **prévisible et traçable** pour générer des Pokémon via PokéAPI.
 - Garantir la **cohérence des jetons** : 100 init → −10 génération → +5 revente.
 - Résister aux **erreurs réseau**, au **double‑clic** et aux **refreshs**.
 - Supporter **offline‑first** (IndexedDB) et **serveur‑autoritaire** (API).
@@ -58,11 +58,9 @@ Ce document formalise la **logique métier** de PokéForge : économie de jeto
 ```mermaid
 flowchart LR
   Click[Click "Générer"] --> CreateKey[Idempotency-Key]
-  CreateKey --> Request[POST /generate (−10)]
-  Request -->|202 queued| Job[jobId]
-  Job --> Poll[GET /generate/{jobId}]
-  Poll -->|succeeded| Save[Save in IndexedDB]
-  Poll -->|failed| Refund[+10 Refund]
+  CreateKey --> Request[GET /pokemon/{id|name} (−10)]
+  Request -->|200 OK| Save[Save in IndexedDB]
+  Request -->|error| Refund[+10 Refund]
 ```
 
 ---
@@ -198,15 +196,9 @@ export function useGeneratePokemon() {
     const key = crypto.randomUUID(); // Idempotency-Key
 
     try {
-      // Serveur (recommandé)
-      const { data } = await client.post("/generate", { prompt }, {
-        headers: { "Idempotency-Key": key }
-      });
-      if (data.chargeApplied) {
-        // Option: mettre à jour le solde localement en attendant le poll
-      }
-      setStatus("running");
-      // poll jusqu'à succeeded/failed...
+      // PokéAPI (synchronisé)
+      const data = await generatePokemonFromApi({ prompt });
+      setStatus("succeeded");
     } catch (e) {
       setStatus("failed");
       // afficher message

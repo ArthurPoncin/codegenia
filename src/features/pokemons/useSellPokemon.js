@@ -3,7 +3,7 @@ import sellPokemon from "@/api/sales.js";
 import { useTokens } from "@/features/tokens/useTokens.js";
 import { useInventory } from "@/features/pokemons/useInventory.js";
 
-export function useSellPokemon({ mode = "server" } = {}) {
+export function useSellPokemon({ mode = "offline" } = {}) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { applyResaleReward, syncBalance } = useTokens();
@@ -14,12 +14,12 @@ export function useSellPokemon({ mode = "server" } = {}) {
       setLoading(true);
       setError(null);
       try {
-        const data = await sellPokemon(pokemonId, config);
+        const data = mode === "offline" ? null : await sellPokemon(pokemonId, config);
 
         await removeLocal(pokemonId);
         await applyResaleReward(pokemonId);
 
-        if (typeof data.balance === "number") {
+        if (typeof data?.balance === "number") {
           await syncBalance(data.balance);
         }
 

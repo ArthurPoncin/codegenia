@@ -93,7 +93,7 @@ pokeforge/
 ├─ src/
 │  ├─ api/
 │  │  ├─ client.js            # axios (baseURL, interceptors)
-│  │  └─ imageGenerator.js    # endpoints IA (appel text-to-image)
+│  │  └─ pokemonApiService.js # intégration PokéAPI
 │  ├─ assets/                 # images statiques, logos
 │  ├─ components/
 │  │  ├─ ui/                  # composants UI génériques (Button, Modal...)
@@ -359,7 +359,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 
 - **02_design_application.md** — Design system, palettes, composants UI, layout.
 - **03_indexeddb_schema.md** — Schéma, clés, opérations CRUD, stratégies de migration.
-- **04_api_endpoints.md** — Contrats des endpoints text-to-image, limites, erreurs.
+- **04_api_endpoints.md** — Contrats PokéAPI, limites et erreurs.
 - **05_logic_metier.md** — Jetons (100 init, -10 génération, +5 revente), règles.
 - **06_integration_frontend.md** — Flux de données complet (hooks, vues, états).
 - **07_tests_qualite.md** — Tests unitaires, e2e, accessibilité, perf.

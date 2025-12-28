@@ -83,11 +83,17 @@ import { useGeneratePokemon } from "@/features/pokemons/useGeneratePokemon";
 import client from "@/api/client";
 
 const server = setupServer(
-  rest.post("https://api.pokeforge.example.com/v1/generate", (req, res, ctx) => {
-    return res(ctx.status(202), ctx.json({ jobId: "job_1", chargeApplied: true }));
+  rest.get("https://pokeapi.co/api/v2/pokemon/pikachu", (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json({
+      id: 25,
+      name: "pikachu",
+      base_experience: 130,
+      sprites: { other: { "official-artwork": { front_default: "#" } } },
+      species: { url: "https://pokeapi.co/api/v2/pokemon-species/25" }
+    }));
   }),
-  rest.get("https://api.pokeforge.example.com/v1/generate/job_1", (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json({ status: "succeeded", image: { id: "img_1", url: "#" } }));
+  rest.get("https://pokeapi.co/api/v2/pokemon-species/25", (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json({ is_legendary: false, is_mythical: false }));
   })
 );
 
@@ -109,7 +115,7 @@ test("generate flow succeeds", async () => {
 - Rendre la page **Home** avec `TokensProvider` + `GeneratorButton` + `PokemonGrid`.
 - Scénarios :
   - **Affichage du solde** (mock `/tokens/balance`).
-  - **Click Générer** → requête `/generate` → polling → insertion en collection.
+  - **Click Générer** → requête PokéAPI → insertion en collection.
   - **Échec génération** → message d’erreur + solde inchangé ou remboursé (selon politique).
 
 ```jsx

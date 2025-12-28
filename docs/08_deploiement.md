@@ -30,8 +30,8 @@ Le dossier **`dist/`** est prêt pour un hébergement **statique** (CDN/edge).
 
 Créer un `.env.example` :
 ```bash
-VITE_API_BASE_URL=https://api.pokeforge.example.com/v1
-VITE_API_KEY=demo-key
+VITE_API_BASE_URL=https://pokeapi.co/api/v2
+VITE_API_KEY= # optionnel si proxy interne
 ```
 - Ne **jamais commiter** les vraies clés.  
 - En prod, injecter via le provider (Vercel/Netlify) ou secrets CI.
@@ -137,7 +137,7 @@ default-src 'self';
 img-src 'self' https://cdn.pokeforge.example.com data: blob:;
 script-src 'self';
 style-src 'self' 'unsafe-inline';
-connect-src 'self' https://api.pokeforge.example.com;
+connect-src 'self' https://pokeapi.co;
 ```
 
 ---
