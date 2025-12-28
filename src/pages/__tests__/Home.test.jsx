@@ -8,29 +8,32 @@ import { TokensProvider } from "@/features/tokens/useTokens.js";
 import { initDB, STORE_POKEMONS } from "@/db/indexedDB.js";
 import { axe } from "jest-axe";
 
-const API_URL = "https://api.pokeforge.test";
+const API_URL = "https://pokeapi.co/api/v2";
 
 const server = setupServer(
-  rest.get(`${API_URL}/tokens/balance`, (req, res, ctx) => {
-    return res(ctx.json({ balance: 100 }));
-  }),
-  rest.get(`${API_URL}/inventory`, (req, res, ctx) => {
-    return res(ctx.json({ items: [] }));
-  }),
-  rest.post(`${API_URL}/generate`, async (req, res, ctx) => {
-    const body = await req.json();
+  rest.get(`${API_URL}/pokemon/pikachu`, (req, res, ctx) => {
     return res(
-      ctx.status(202),
-      ctx.json({ jobId: "job_home", status: "queued", chargeApplied: true, balance: 90, prompt: body.prompt })
+      ctx.json({
+        id: 25,
+        name: "pikachu",
+        base_experience: 130,
+        sprites: {
+          other: {
+            "official-artwork": {
+              front_default: "https://cdn.test/pikachu.png",
+            },
+          },
+        },
+        species: { url: `${API_URL}/pokemon-species/25` },
+      })
     );
   }),
-  rest.get(`${API_URL}/generate/job_home`, (req, res, ctx) => {
+  rest.get(`${API_URL}/pokemon-species/25`, (req, res, ctx) => {
     return res(
-      ctx.status(200),
       ctx.json({
-        jobId: "job_home",
-        status: "succeeded",
-        image: { id: "img_home", url: "https://cdn.test/img_home.png" },
+        is_legendary: false,
+        is_mythical: false,
+        capture_rate: 190,
       })
     );
   })
@@ -60,13 +63,13 @@ describe("Home page", () => {
 
     const textarea = screen.getByLabelText(/Décris ton Pokémon/i);
     await user.clear(textarea);
-    await user.type(textarea, "Pokémon de test");
+    await user.type(textarea, "pikachu");
     await user.click(screen.getByRole("button", { name: /Générer/i }));
 
     await waitFor(async () => {
       const db = await initDB();
       const stored = await db.getAll(STORE_POKEMONS);
-      expect(stored.some((item) => item.id === "img_home")).toBe(true);
+      expect(stored.some((item) => item.id === "pkmn_25")).toBe(true);
     });
   });
 

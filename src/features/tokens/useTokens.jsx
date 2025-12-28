@@ -242,7 +242,7 @@ function useProvideTokens({ mode }) {
   };
 }
 
-export function TokensProvider({ children, mode = "server" }) {
+export function TokensProvider({ children, mode = "offline" }) {
   const value = useProvideTokens({ mode });
   return <TokensContext.Provider value={value}>{children}</TokensContext.Provider>;
 }
@@ -261,7 +261,7 @@ TokensProvider.propTypes = {
 };
 
 TokensProvider.defaultProps = {
-  mode: "server",
+  mode: "offline",
 };
 
 export default useTokens;

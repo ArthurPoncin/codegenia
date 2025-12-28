@@ -19,7 +19,7 @@ function mapServerItem(item) {
   };
 }
 
-export function useInventory({ mode = "server", autoLoad = true } = {}) {
+export function useInventory({ mode = "offline", autoLoad = true } = {}) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);

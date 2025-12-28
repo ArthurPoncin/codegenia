@@ -3,7 +3,7 @@ import { ApiError, createAbortError } from "@/api/errors.js";
 
 const TERMINAL_FAILURE_STATUSES = new Set(["failed", "canceled"]);
 
-// Voir docs/04_api_endpoints.md — POST /generate
+// Legacy: ancien endpoint /generate (désactivé en production).
 export async function startGenerationJob(
   payload,
   { idempotencyKey, signal, headers: extraHeaders = {} } = {}
@@ -20,7 +20,7 @@ export async function startGenerationJob(
   return response.data;
 }
 
-// Voir docs/04_api_endpoints.md — GET /generate/{jobId}
+// Legacy: ancien endpoint /generate/{jobId}
 export async function getGenerationJob(jobId, config = {}) {
   if (!jobId) {
     throw new Error("getGenerationJob requires a jobId");
@@ -30,7 +30,7 @@ export async function getGenerationJob(jobId, config = {}) {
   return response.data;
 }
 
-// Voir docs/04_api_endpoints.md — polling de job
+// Legacy: polling d'un job /generate
 export async function pollGenerationJob(jobId, options = {}) {
   const {
     intervalMs = 1500,

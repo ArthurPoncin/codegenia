@@ -1,8 +1,8 @@
 // src/pages/Home.jsx
 import { Link } from "react-router-dom";
 import Button from "@/components/ui/Button.jsx";
-import PokemonCard from "@/components/domain/PokemonCard.jsx";
-import { generatePokemonFromApi } from "@/services/pokemonApiService.js";
+import GeneratorButton from "@/components/domain/GeneratorButton.jsx";
+import PokemonGrid from "@/components/domain/PokemonGrid.jsx";
 
 const heroStats = [
   { value: "100", label: "Jetons offerts pour démarrer" },
@@ -126,6 +126,22 @@ function Home() {
             </article>
           ))}
         </div>
+      </section>
+
+      <section id="pokemon-generator" className="space-y-6 rounded-3xl border border-white/60 bg-white/75 p-8 shadow-card backdrop-blur">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="space-y-2">
+            <h2 className="text-2xl font-semibold text-brand-black">Génère un Pokémon grâce à PokéAPI</h2>
+            <p className="text-sm text-brand-gray">
+              Indique un nom connu (ex. Pikachu) ou laisse la forge sélectionner un Pokémon aléatoire.
+            </p>
+          </div>
+          <span className="inline-flex items-center gap-2 rounded-full border border-brand-yellow/50 bg-brand-yellow/20 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-brand-gray">
+            PokéAPI Live
+          </span>
+        </div>
+        <GeneratorButton />
+        <PokemonGrid />
       </section>
 
       <section className="relative overflow-hidden rounded-3xl border border-brand-blue/30 bg-brand-blue/10 p-10 text-center shadow-card backdrop-blur">

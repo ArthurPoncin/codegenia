@@ -3,7 +3,7 @@ import PokemonCard from "@/components/domain/PokemonCard.jsx";
 import { useInventory } from "@/features/pokemons/useInventory.js";
 import { useSellPokemon } from "@/features/pokemons/useSellPokemon.js";
 
-function PokemonGrid({ mode = "server" }) {
+function PokemonGrid({ mode = "offline" }) {
   const { items, loading, error } = useInventory({ mode });
   const { sell, loading: selling, error: sellError } = useSellPokemon({ mode });
   const [currentId, setCurrentId] = useState(null);
